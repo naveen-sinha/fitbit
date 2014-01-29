@@ -16,10 +16,12 @@
         <link rel="stylesheet" href="css/main.css">
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
 
-        <!-- Highlighter for code highlighting -->
-        <link rel="stylesheet" href="styles/default.css">
-        <script src="highlight.pack.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
+        <!-- Enable code highlighting -->
+        <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=css&skin=desert"></script>
+
+        <!-- Use custom font -->
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -30,10 +32,12 @@
             <section class="title-bar">
                 <h1>Better Habits Through Fitbit</h1>
                 <h2>An exploration of one year of lifestyle tracking</h2>
-                <h5>by Naveen Sinha</h5>
+                <h3>by Naveen Sinha</h3>
             </section>
 
             <h3>Summary</h3>
+
+            <p>Fitbit has been a steady companion over the past year, through many life transitions. I love the way that it quantifies my life, but I'm also frustrated with how it misses on major changes in my daily routine.
 
             <h3>Step 1) Import the data</h3>
 
@@ -41,19 +45,32 @@
 
             <p>The R programming language provides powerful tools for analyzing data, so I exported my data from the Google Spreadsheet into a CSV file to be read into R.</p>
 
-            <p>There were two small conversions that were necessary:</p>
-            <ul>
-                <li>Convert the date values from strings to <pre>Date</pre> objects:<pre><code>as.Date(date, '%d/%m/%Y')</code></pre></li>
-                <li>Create an additional column for the day of the week using the <pre>weekdays</pre> function.</li> 
-            </ul>
+            <p>The main trick was to convert the string for the date to a Date object in R, so that it would be sorted properly. I also created a new column to display the days of the week in chronological, rather than alphabetical, order.</p>
+                    
+            <pre class="prettyprint" class="code-light">
+            mydata$date <- as.Date(mydata$date)
+            mydata$days <- weekdays(mydata$date)
+            days_names = c('sun', 'mon', 'tues', 'wed', 'thurs', 'fri', 'sat', 'sun')
+            mydata$days_f = factor(mydata$days, levels=days_names)
+            </pre>
+
 
             <h3>Step 2) Segregate according to day of the week</h3>
 
-            <p>Most people, including me, have a weekly routine of which days they do CrossFit, stadium Runs with the November Project, or long runs around Boston.</p>
+            <p>Most people, including me, have a weekly routine that varies greatly from day to day. In my case, I typically do CrossFit on Mondays, Thursdays, and Saturdaysl stadium runs with the November Project on Wednesday; and long runs around Boston on Sundays.</p>
 
-            <h4>Distance</h4>
+            <p>To isolate the effect of the day of the week on any overall trends, I used the <span class="code">facet grids</span> in the <span class="code">ggplot</span> library.</p>
 
-            <figure><img class="plot" src="img/distance-by-day.png"></figure>
+            <pre class="prettyprint" class="code-light">
+            p <- ggplot(mydata, aes(date, steps, fill=(weekdays(date)), alpha=factor(steps))) 
+                + geom_bar(stat="identity", width=5)
+            p + facet_grid(days_f ~ .) + theme(legend.position='none') 
+                + xlab('Date') + ylab('Steps') + labs(title="Steps per day")
+            </pre>
+
+            <h4>Steps</h4>
+
+            <figure><img class="plot" src="img/steps-by-day.png"></figure>
 
             <h4>Calories consumed</h4>
 
@@ -61,15 +78,19 @@
 
             <h4>Minutes asleep</h4>
 
-            <figure><img class="plot" src="img/minutesAsleep-by-day.png"></figure>
+            <figure><img class="plot" src="img/sleep-by-day.png"></figure>
 
             <h4>Minutes very active</h4>
 
-            <figure><img class="plot" src="img/minutesVeryActive-by-day.png"></figure>
+            <figure><img class="plot" src="img/very-active-by-day.png"></figure>
 
-            <h3>Step 3) Look for correlations</h3>
+            <h3>Step 3) Look at the distributions</h3>
+
+            <p>One of my problems with Fitbit is the 10,000 step per day goal. My daily schedule is variable enough that my total number of steps can easily vary by a factor of two. To quantify this effect, I looked at histograms for some key metrics about activity.
 
             <h3>Step 4) Look for bright spots</h3>
+
+            <p>Rather than a linearly increasing step goal, more personalized recommendations would be inspired by exceptional days in my history.
 
             <h3>What's next?</h3>
 
@@ -78,9 +99,6 @@
             <script src="js/plugins.js"></script>
             <script src="js/main.js"></script>
 
-            <!-- Enable code highlighting -->
-            <link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/default.min.css">
-            <script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
 
             <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
             <script>

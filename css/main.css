@@ -98,6 +98,7 @@ textarea {
    ========================================================================== */
 
 .wrapper {
+    font-family: 'Open Sans', sans-serif;
     float: center;
     margin: 5%;
     width: 90%;
@@ -110,9 +111,20 @@ textarea {
     text-align: center;
 }
 
+pre {
+    font-size: 0.8em;
+    margin: 0 8% 0 8%;
+    padding: 1em 0 0 0;
+    width: 80%;
+}
+
+.code {
+    font-weight: 700;
+}
+
 .plot {
-    margin: 5%;
-    width: 100%;
+    margin: 0 20% 0 10%;
+    width: 70%;
 }
 
 
