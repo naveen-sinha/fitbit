@@ -97,8 +97,23 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+.wrapper {
+    float: center;
+    margin: 5%;
+    width: 90%;
+}
 
+.title-bar {
+    line-height: 0.8em;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
 
+.plot {
+    margin: 5%;
+    width: 100%;
+}
 
 
 
