@@ -30,9 +30,9 @@
 
         <section class="wrapper">
             <section class="title-bar">
-                <h1>Better Habits Through Fitbit</h1>
+                <h1>Fitbit's View of My Past Year</h1>
                 <h2>An exploration of one year of lifestyle tracking</h2>
-                <h3>by Naveen Sinha</h3>
+                <h4>by Naveen Sinha</h4>
             </section>
 
             <h3>Summary</h3>
@@ -70,13 +70,21 @@
 
             <h4>Steps</h4>
 
+            <p>I feel fortunate to not be trapped sitting in a cubicle for 10 hours a day; I've spent my time running between experiments in lab, meetings with people in startups around Boston, and finding new coffee shops to work in.</p>
+
+            <p>Despite this variability, I can see the effect of several changes to my routine. My renewed interest in distance running towards the end of the year is evident in the Sunday row. The increased step counts on Wednesdays in the last third of the year comes from joining the Novemeber Project stadium runs. The overall rise and fall during the summer months comes from running time-lapse experiments in lab, followed by many hours spent writing my dissertation in cafes. </p>
+
             <figure><img class="plot" src="img/steps-by-day.png"></figure>
 
             <h4>Calories consumed</h4>
 
+            <p>My caloric intake is definitely my least accurate metric with Fitbit. I have no idea how many calories are in a charcuterie plate at a restaurant, I don't carefully measure out the amount of peanut butter I consume, and I don't keep track of the calories in my cocktails when going to a bar. I'm pretty sure all the numbers on the chart are underestimates, since my weight has stayed almost exactly the same over the whole year.</p>
+
             <figure><img class="plot" src="img/calories-by-day.png"></figure>
 
             <h4>Minutes asleep</h4>
+
+            <p>I typically sleep around six hours per weeknight and more on the weekends. The decreased sleep during the summer months comes from the final sprint to my PhD defense.</p>
 
             <figure><img class="plot" src="img/sleep-by-day.png"></figure>
 
@@ -86,13 +94,104 @@
 
             <h3>Step 3) Look at the distributions</h3>
 
-            <p>One of my problems with Fitbit is the 10,000 step per day goal. My daily schedule is variable enough that my total number of steps can easily vary by a factor of two. To quantify this effect, I looked at histograms for some key metrics about activity.
+            <p>One of my problems with Fitbit is the 10,000 step per day goal. My daily schedule is variable enough that my total number of steps can easily vary by a factor of two. To quantify this effect, I looked at histograms for some key metrics about activity.</p>
 
-            <h3>Step 4) Look for bright spots</h3>
+            <pre class="prettyprint" class="code-light">
+            # plot histograms of activity levels
+            source("multiplot.r")
 
-            <p>Rather than a linearly increasing step goal, more personalized recommendations would be inspired by exceptional days in my history.
+            p1 <- ggplot(mydata, aes(x=minutesSedentary, fill=..count..)) + theme(legend.position="none") 
+            p1 <- p1 + scale_fill_gradient("Count", low = "black", high = "blue") 
+            p1 <- p1 + geom_histogram(origin=0, binwidth=30) + xlab("Sedentary (min.)")
+
+            p2 <- ggplot(mydata, aes(x=minutesLightlyActive, fill=..count..)) + theme(legend.position="none")
+            p2 <- p2 + scale_fill_gradient("Count", low = "black", high = "green") 
+            p2 <- p2 + geom_histogram(origin=0, binwidth=10) + xlab("Lightly Active (min.)")
+
+            p3 <- ggplot(mydata, aes(x=minutesFairlyActive, fill=..count..)) + theme(legend.position="none")
+            p3 <- p3 + scale_fill_gradient("Count", low = "black", high = "yellow") 
+            p3 <- p3 + geom_histogram(origin=0, binwidth=10) + xlab("Fairly Active (min.)")
+
+            p4 <- ggplot(mydata, aes(x=minutesVeryActive, fill=..count..)) + theme(legend.position="none")
+            p4 <- p4 + scale_fill_gradient("Count", low = "black", high = "red") 
+            p4 <- p4 + geom_histogram(origin=0, binwidth=10) + xlab("Fairly Active (min.)")
+
+            multiplot(p1, p3, p2, p4, cols=2)
+            </pre>
+
+            <p>All of my levels of activity show a fairly symmetric distribution around the mean.</p>
+
+            <figure><img class="plot" src="img/activity-hist.png"></figure>
+
+            
+            <h3>Step 4) Look for correlations</h3>
+
+            <p>I wanted to see if there was any relationship between the amount of time I slept at night and various other metrics about my life. As a quick way to check, I looked for correlations between my time asleep and the other measurements.</p>
+
+            <figure><img class="plot" src="img/activity-corr.png"></figure>
+
+            <p>The answer is that sleep seems independent of everything else. The amount of time I spend awake during the night appears uncorrelated with the total time in bed. There's a slight correlation between more steps and more very active minutes, which is probably from waking up early for a pre-dawn run. The amount of food I eat seems totally unrelated to the amount that I sleep.</p>
+
+            <p>I checked the other pairs of variabilities, but couldn't find any strong correlations anywhere.</p>
+
+            <h3>Step 5) Investigate the extremes</h3>
+
+            <p>Since there is so much day-to-day variability in my activity levels and no clear correlations, I decided to search through which days had the highest step counts, as shown in the table below.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <td>rank</td>
+                        <td>date</td>
+                        <td>steps</td>
+                        <td>notes</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>05/17/2013</td>
+                        <td>31,081</td>
+                        <td>Mid-distance run, time-lapse experiments</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>07/20/2013</td>
+                        <td>29,936</td>
+                        <td>Mid-distance run, time-lapse experiment</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>04/09/2013</td>
+                        <td>29,193</td>
+                        <td>Crossfit, meetings</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>06/05/2013</td>
+                        <td>28,983</td>
+                        <td>Crossfit, meetings, time-lapse</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>10/15/2013</td>
+                        <td>28,699</td>
+                        <td>Post-midnight walk home from party</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Surprisingly, none of my long-run days made the top five. All of the most active days were the result of walking (and sometimes running) between time-lapse experiments in lab and meetings around Cambridge.</p>
+
+            <p>This suggests that for increasing my movement, the big gains aren't from longer morning runs, but rather finding a more active work environment. This could involve a treadmill desk, walking meetings, and meeting friends for cocktails more often.</p>
 
             <h3>What's next?</h3>
+
+            <p>For me the best thing that Fitbit could do for my health is to break up long uninterrupted periods of being sedentary.</p>
+
+            <p>I am the most creative and the mood is my best when I'm moving throughout the day. Often in grad school, the road block with my MATLAB code would suddenly disappear as soon as I left the office to walk down the stairs.</p>
+
+            <p>At the same time, many of my goals are things that can't be measured by the current version of Fitbit, such as hand-stand push-ups, pistols, and V-sits. Doing a "deck a day" workout (for me, roughly 25 minutes of push-ups and sit-ups) involves almost no movement by the Fitbit One at my waist.</p>
 
             <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
             <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
