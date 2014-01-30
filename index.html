@@ -43,6 +43,8 @@
 
             <p>A <a href="http://quantifiedself.com/2013/02/how-to-download-fitbit-data-using-google-spreadsheets/">script</a> by Ernesto Ramirez makes downloading personal data from Fitbit a painless process. After getting a Developer Account from the Fitbit Developer <a href="dev.fitbit.com">website</a>, I was able to download my data in about 10 minutes.</p>
 
+            <figure><img class="plot" src="img/screen-shot-gdoc.png"></figure>
+
             <p>The R programming language provides powerful tools for analyzing data, so I exported my data from the Google Spreadsheet into a CSV file to be read into R.</p>
 
             <p>The main trick was to convert the string for the date to a Date object in R, so that it would be sorted properly. I also created a new column to display the days of the week in chronological, rather than alphabetical, order.</p>
